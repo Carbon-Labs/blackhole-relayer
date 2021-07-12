@@ -6,8 +6,8 @@ module.exports = {
         items: {
           type: "string"
         },
-        maxItems: 2,
-        minItems: 2,
+        maxItems: 3,
+        minItems: 3,
     },
     pi_b_1: {
         type: "array",
@@ -38,8 +38,8 @@ module.exports = {
         items: {
             type: "string"
         },
-        maxItems: 2,
-        minItems: 2
+        maxItems: 3,
+        minItems: 3
     },
     publicSignals: {
         type: "array",

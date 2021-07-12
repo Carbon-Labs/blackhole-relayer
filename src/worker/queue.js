@@ -28,7 +28,7 @@ module.exports = Object.freeze({
             if (!id) {
                 return null;
             }
-            const job = withdrawJob.getJobFromId(id);
+            const job = await withdrawJob.getJobFromId(id);
             if (!job) {
                 return null
             }

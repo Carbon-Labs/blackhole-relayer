@@ -14,7 +14,7 @@ const pubSub = require("./pupSub");
 
 app.set('trust proxy', 1);
 
-const whitelist = ["http://localhost:8090", "https://blackhole.carbontoken.info"];
+const whitelist = ["http://localhost:8081", "https://blackhole.carbontoken.info"];
 const corsOptionsDelegate = (req, callback) => {
     let corsOptions = {origin: false};
     const isDomainAllowed = whitelist.indexOf(req.header('Origin')) !== -1;

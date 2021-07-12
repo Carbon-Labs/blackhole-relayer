@@ -1,5 +1,10 @@
 const blackhole = require("./blackhole");
-const commits = async ({address, index}) => blackhole.client.share({address}).getCommitments(index);
+const {blockchain} = require("../../config");
+const share = (token_address) => blackhole.client.share({
+    address: token_address,
+    blockchain,
+});
+const commits = async ({address, index}) => share(address).getCommitments(index);
 
 const createTreePath = async ({address, index}) => {
     const merkleTree = new blackhole.MerkleTree(7, null, "blackhole");
@@ -11,9 +16,9 @@ const createTreePath = async ({address, index}) => {
 };
 
 module.exports = async ({proof, relayer}) => {
-    let path = await createTreePath({address: proof.address, index: proof.index});
+    let path = await createTreePath({address: proof.contract_amount, index: proof.treeIndex});
     if (path.root.toString() !== proof.publicSignals[0].toString()) {
-        path = await createTreePath({address: proof.address, index: BigInt((proof.index + 1))});
+        path = await createTreePath({address: proof.contract_amount, index: BigInt((proof.treeIndex + 1))});
     }
     const {root} = path;
     const proofData = {
@@ -22,13 +27,13 @@ module.exports = async ({proof, relayer}) => {
         pi_c: proof.pi_c.map(p => p.toString()),
         publicSignals: proof.publicSignals.map(e => e.toString())
     };
-    return !(await blackhole.client.share({address: proof.address}).isExist(proof.nullifier)) &&
+
+    return !(await share(proof.contract_amount).isSpent(proof.nullifier)) &&
         blackhole.knownProof({
             nullifier: proof.nullifier,
             root,
             input: proofData,
             relayer: BigInt(relayer),
             recipient: BigInt(proof.recipient),
-        }) &&
-        await blackhole.snarkVerify(proofData);
+        }) && await blackhole.snarkVerify(proofData);
 };

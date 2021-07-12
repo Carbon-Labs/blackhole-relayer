@@ -9,17 +9,17 @@ const zrc2Parser = ajv.compile(zrc2WithdrawSchema);
 
 module.exports = Object.freeze({
     parseZil: (body) => {
-        const data = zilParser(body);
-        if (!data) {
+        const isValid = zilParser(body);
+        if (!isValid) {
             throw new Error("Invalid withdraw object");
         }
-        return data;
+        return body;
     },
     parseZrc2: (body) => {
-        const data = zrc2Parser(body);
-        if (!data) {
+        const isValid = zrc2Parser(body);
+        if (!isValid) {
             throw new Error("Invalid withdraw object");
         }
-        return data;
+        return body;
     }
 })
