@@ -1,0 +1,26 @@
+version: '2'
+
+services:
+  web:
+    build: .
+    volumes:
+      - .:/home/node/app
+      - ./node_modules:/home/node/app/node_modules
+    env_file: .env
+    ports:
+      - "3000:3000"
+    environment:
+      REDIS_URL: redis://redis/0
+    depends_on: [ redis ]
+    command: node server.js
+
+  redis:
+    image: redis
+    ports:
+      - "127.0.0.1:6379:6379"
+    command: [ redis-server, --appendonly, 'yes' ]
+    volumes:
+      - redis:/data
+
+volumes:
+  redis:
