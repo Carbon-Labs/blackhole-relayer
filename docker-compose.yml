@@ -26,8 +26,10 @@ services:
     environment:
       - DEFAULT_EMAIL=contact@carbontoken.info
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /etc/acme.sh
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./nginx/nginx-certs:/etc/nginx/certs
+      - ./nginx/nginx-vhost:/etc/nginx/vhost.d
+      - ./nginx/nginx-html:/usr/share/nginx/html
 
   relayer:
     build: .
