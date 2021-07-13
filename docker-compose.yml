@@ -21,8 +21,7 @@ services:
     networks:
       - service-network
     #restart: always
-    depends_on:
-      - nginx-proxy
+    depends_on: [ nginx-proxy ]
     environment:
       - DEFAULT_EMAIL=contact@carbontoken.info
     volumes:
