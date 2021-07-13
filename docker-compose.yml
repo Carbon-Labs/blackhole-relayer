@@ -1,21 +1,9 @@
 version: '2'
 
 services:
-  letsencrypt:
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    container_name: nginx-proxy-letsencrypt
-    networks:
-      - service-network
-    #restart: always
-    environment:
-      - DEFAULT_EMAIL=contact@carbontoken.info
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /etc/acme.sh
 
   nginx-proxy:
     image: jwilder/nginx-proxy
-    container_name: nginx-proxy
     networks:
       - service-network
     #restart: always
@@ -28,6 +16,16 @@ services:
       - ./nginx/nginx-vhost:/etc/nginx/vhost.d
       - ./nginx/nginx-html:/usr/share/nginx/html
 
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    networks:
+      - service-network
+    #restart: always
+    environment:
+      - DEFAULT_EMAIL=contact@carbontoken.info
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/acme.sh
 
   relayer:
     build: .
