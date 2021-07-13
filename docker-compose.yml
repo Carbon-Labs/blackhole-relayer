@@ -12,7 +12,8 @@ services:
       - 443:443
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./nginx/nginx-certs:/etc/nginx/certs
+      - ./nginx/dhparam:/etc/nginx/dhparam
+      - ./nginx/nginx-certs:/etc/nginx/certs:ro
       - ./nginx/nginx-vhost:/etc/nginx/vhost.d
       - ./nginx/nginx-html:/usr/share/nginx/html
 
@@ -26,7 +27,7 @@ services:
       - DEFAULT_EMAIL=contact@carbontoken.info
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./nginx/nginx-certs:/etc/nginx/certs
+      - ./nginx/nginx-certs:/etc/nginx/certs:rw
       - ./nginx/nginx-vhost:/etc/nginx/vhost.d
       - ./nginx/nginx-html:/usr/share/nginx/html
 
