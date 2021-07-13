@@ -44,7 +44,6 @@ services:
     command: node server.js
     volumes:
       - .:/home/node/app
-      - ./node_modules:/home/node/app/node_modules
 
 
   worker:
