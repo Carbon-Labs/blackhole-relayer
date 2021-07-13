@@ -33,17 +33,17 @@ const updateStatus = async (status) => {
     queue.withdrawJob.queue.process(async (job) => {
         currentJob = job;
         console.log(`Start sent withdraw transaction ${job.data.uuid}`);
-        console.log(currentJob);
+        currentJob = job;
+        const {data} = job;
         try {
-            currentJob = job;
-            const {data} = job;
             const params = data.token_address ? createWithdraw.zrc2Withdraw(data) : createWithdraw.zilWithdraw(data);
-            const tx = data.isZRC2 ? await proxy.WithdrawZil(params) : await proxy.WithdrawToken(params);
+            const tx = data.isZRC2 ? await proxy.WithdrawToken(params) : await proxy.WithdrawZil(params);
             await updateTxHash('0x' + tx.id);
             await updateStatus(status.ACCEPTED);
             pubSub.emit("RELAYE_COMPLETE", await queue.withdrawJob.getStatus(data.uuid));
         } catch (e) {
             console.log(e);
+            pubSub.emit("RELAYE_FAILED", await queue.withdrawJob.getStatus(data.uuid));
             throw new Error(e.message);
         }
     });

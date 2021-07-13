@@ -27,10 +27,9 @@ module.exports = async ({proof, relayer}) => {
         pi_c: proof.pi_c.map(p => p.toString()),
         publicSignals: proof.publicSignals.map(e => e.toString())
     };
-
     return !(await share(proof.contract_amount).isSpent(proof.nullifier)) &&
         blackhole.knownProof({
-            nullifier: proof.nullifier,
+            nullifier: BigInt(proof.nullifier),
             root,
             input: proofData,
             relayer: BigInt(relayer),
