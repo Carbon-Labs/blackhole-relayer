@@ -4,7 +4,8 @@ services:
   letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion
     container_name: nginx-proxy-letsencrypt
-    network_mode: service-network
+    networks:
+      - service-network
     #restart: always
     environment:
       - DEFAULT_EMAIL=contact@carbontoken.info
@@ -15,7 +16,8 @@ services:
   nginx-proxy:
     image: jwilder/nginx-proxy
     container_name: nginx-proxy
-    network_mode: service-network
+    networks:
+      - service-network
     #restart: always
     ports:
       - 80:80
@@ -30,7 +32,8 @@ services:
   relayer:
     build: .
     container_name: relayer
-    network_mode: service-network
+    networks:
+      - service-network
     #restart: always
     environment:
       REDIS_URL: redis://redis/0
@@ -44,12 +47,13 @@ services:
     command: node server.js
     volumes:
       - .:/home/node/app
-
+      - node_modules:/home/node/app/node_modules
 
   worker:
     build: .
     container_name: worker
-    network_mode: service-network
+    networks:
+      - service-network
     #restart: always
     environment:
       REDIS_URL: redis://redis/0
@@ -58,16 +62,24 @@ services:
     command: node src/worker
     volumes:
       - .:/home/node/app
-      - ./node_modules:/home/node/app/node_modules
+      - node_modules:/home/node/app/node_modules
 
 
   redis:
     image: redis
     container_name: redis
-    network_mode: service-network
+    networks:
+      - service-network
     #restart: always
     ports:
       - 127.0.0.1:6379:6379
     command: [ redis-server, --appendonly, 'yes' ]
     volumes:
       - ./redis:/data
+
+networks:
+  service-network:
+    external: true
+
+volumes:
+  node_modules:
