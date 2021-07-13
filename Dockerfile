@@ -9,9 +9,3 @@ COPY package*.json ./
 USER node
 
 RUN npm install
-
-COPY --chown=node:node . .
-
-EXPOSE 3000
-
-CMD [ "node", "server.js" ]

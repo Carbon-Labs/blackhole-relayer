@@ -1,26 +1,74 @@
 version: '2'
 
 services:
-  web:
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: nginx-proxy-letsencrypt
+    network_mode: service-network
+    #restart: always
+    environment:
+      - DEFAULT_EMAIL=contact@carbontoken.info
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/acme.sh
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    network_mode: service-network
+    #restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./nginx/nginx-certs:/etc/nginx/certs
+      - ./nginx/nginx-vhost:/etc/nginx/vhost.d
+      - ./nginx/nginx-html:/usr/share/nginx/html
+
+
+  relayer:
     build: .
+    container_name: relayer
+    network_mode: service-network
+    #restart: always
+    environment:
+      REDIS_URL: redis://redis/0
+      VIRTUAL_HOST: relayer-blackhole.carbontoken.info
+      LETSENCRYPT_HOST: relayer-blackhole.carbontoken.info
+      LETSENCRYPT_EMAIL: contact@carbontoken.info
+    env_file: .env
+    ports:
+      - 3000:3000
+    depends_on: [ redis ]
+    command: node server.js
     volumes:
       - .:/home/node/app
       - ./node_modules:/home/node/app/node_modules
-    env_file: .env
-    ports:
-      - "3000:3000"
+
+
+  worker:
+    build: .
+    container_name: worker
+    network_mode: service-network
+    #restart: always
     environment:
       REDIS_URL: redis://redis/0
+    env_file: .env
     depends_on: [ redis ]
-    command: node server.js
+    command: node src/worker
+    volumes:
+      - .:/home/node/app
+      - ./node_modules:/home/node/app/node_modules
+
 
   redis:
     image: redis
+    container_name: redis
+    network_mode: service-network
+    #restart: always
     ports:
-      - "127.0.0.1:6379:6379"
+      - 127.0.0.1:6379:6379
     command: [ redis-server, --appendonly, 'yes' ]
     volumes:
-      - redis:/data
-
-volumes:
-  redis:
+      - ./redis:/data
