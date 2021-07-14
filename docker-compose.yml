@@ -3,7 +3,9 @@ version: '2'
 services:
 
   nginx-proxy:
-    build: ./DockerfileProxy
+    build:
+      context: ./
+      dockerfile: DockerfileProxy
     networks:
       - service-network
     restart: always
