@@ -17,6 +17,7 @@ app.set('trust proxy', 1);
 const whitelist = ["http://localhost:8081", "https://blackhole.carbontoken.info"];
 const corsOptionsDelegate = (req, callback) => {
     let corsOptions = {origin: false};
+    console.log(req);
     const isDomainAllowed = whitelist.indexOf(req.header('Origin')) !== -1;
     console.log(req.header('Origin'), "isDomainAllowed:", isDomainAllowed);
     if (isDomainAllowed) {
