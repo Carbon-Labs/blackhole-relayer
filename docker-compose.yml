@@ -84,7 +84,7 @@ services:
 
 networks:
   service-network:
-    external: false
+    external: true
 
 volumes:
   node_modules:
