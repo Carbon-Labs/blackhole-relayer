@@ -14,11 +14,11 @@ const pubSub = require("./pupSub");
 
 app.set('trust proxy', 1);
 
-const whitelist = ["http://localhost:8081", "https://blackhole.carbontoken.info"];
+const whitelist = ["localhost:8081", "blackhole.carbontoken.info"];
 const corsOptionsDelegate = (req, callback) => {
     let corsOptions = {origin: false};
     const isDomainAllowed = whitelist.indexOf(req.header('Origin') || req.headers.host) !== -1;
-    console.log(req.header('Origin'), "isDomainAllowed:", isDomainAllowed);
+    console.log(req.headers.host, "isDomainAllowed:", isDomainAllowed);
     if (isDomainAllowed) {
         // Enable CORS for this request
         corsOptions = {origin: true}
