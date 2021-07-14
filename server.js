@@ -18,6 +18,7 @@ const whitelist = ["http://localhost:8081", "https://blackhole.carbontoken.info"
 const corsOptionsDelegate = (req, callback) => {
     let corsOptions = {origin: false};
     const isDomainAllowed = whitelist.indexOf(req.header('Origin')) !== -1;
+    console.log(req.header('Origin'), "isDomainAllowed:", isDomainAllowed);
     if (isDomainAllowed) {
         // Enable CORS for this request
         corsOptions = {origin: true}
