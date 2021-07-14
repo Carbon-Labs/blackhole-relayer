@@ -3,7 +3,7 @@ version: '2'
 services:
 
   nginx-proxy:
-    image: jwilder/nginx-proxy:stable
+    image: jwilder/nginx-proxy
     networks:
       - service-network
     restart: always
