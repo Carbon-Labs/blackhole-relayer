@@ -19,6 +19,7 @@ module.exports = Object.freeze({
         add: async (data) => {
             const id = uuid();
             data.uuid = id;
+            data.createAt = new Date().toISOString();
             const job = await withdrawJob.add(data);
             await redis.set(`job:${id}`, job.id);
             return id;

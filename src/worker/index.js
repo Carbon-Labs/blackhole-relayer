@@ -25,6 +25,7 @@ const updateTxHash = async (txHash) => {
 const updateStatus = async (status) => {
     console.log(`Job status updated ${status}`);
     currentJob.data.status = status;
+    currentJob.data.lastUpdateDate = new Date().toISOString();
     await currentJob.update(currentJob.data);
 };
 
@@ -36,15 +37,18 @@ const updateStatus = async (status) => {
         currentJob = job;
         const {data} = job;
         try {
+            await updateStatus(status.QUEUED);
             const params = data.token_address ? createWithdraw.zrc2Withdraw(data) : createWithdraw.zilWithdraw(data);
-            const tx = data.isZRC2 ? await proxy.WithdrawToken(params) : await proxy.WithdrawZil(params);
-            await updateTxHash('0x' + tx);
+            data.isZRC2 ? await proxy.WithdrawToken(params, async (tx) => await updateTxHash('0x' + tx)) : await proxy.WithdrawZil(params, async (tx) => await updateTxHash('0x' + tx));
             await updateStatus(status.ACCEPTED);
             pubSub.emit("RELAYE_COMPLETE", await queue.withdrawJob.getStatus(data.uuid));
         } catch (e) {
+            await updateStatus(status.FAILED);
             console.log(e);
             pubSub.emit("RELAYE_FAILED", await queue.withdrawJob.getStatus(data.uuid));
             throw new Error(e.message);
         }
+        await queue.withdrawJob.queue.clean(1000 * 60 * 60 * 24);
+        await queue.withdrawJob.queue.clean(1000 * 60 * 60 * 24, 'failed');
     });
 })();
