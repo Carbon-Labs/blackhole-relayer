@@ -77,7 +77,7 @@ const io = new Server(httpServer, {
     });
 
     pubSub.on("RELAYE_START", ({txHash, uuid}) => {
-        io.to(uuid).emit("RELAYE_START", txHash);
+        io.to(uuid).emit("RELAYE_START", {txHash});
     });
 
     pubSub.on("RELAYE_COMPLETE", ({txHash, uuid}) => {
