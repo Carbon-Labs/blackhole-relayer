@@ -9,7 +9,7 @@
     "server:dev": "node server.js"
   },
   "dependencies": {
-    "blackhole-sdk": "^1.5.6",
+    "blackhole-sdk": "^1.5.8",
     "node-fetch": "^2.6.1",
     "uuid": "^8.3.2",
     "ioredis": "^4.27.6",

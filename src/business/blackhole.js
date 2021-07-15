@@ -1,5 +1,5 @@
 const Blackhole = require("blackhole-sdk");
-const fetchNode = require("node-fetch");
+const fetchNode = require("./fetchCache");
 const {blockchain, privateKey} = require("../../config");
 module.exports = Blackhole({
     request: fetchNode,

@@ -76,12 +76,12 @@ const io = new Server(httpServer, {
         socket.on('disconnect', () => io.sockets.connected[socket.id].disconnect());
     });
 
-    pubSub.on("RELAYE_COMPLETE", (data) => {
-        io.to(data.uuid).emit("RELAYE_COMPLETE", data);
+    pubSub.on("RELAYE_COMPLETE", ({txHash}) => {
+        io.to(data.uuid).emit("RELAYE_COMPLETE", txHash);
     });
 
-    pubSub.on("RELAYE_FAILED", (data) => {
-        io.to(data.uuid).emit("RELAYE_FAILED", data);
+    pubSub.on("RELAYE_FAILED", ({txHash}) => {
+        io.to(data.uuid).emit("RELAYE_FAILED", txHash);
     });
 
     httpServer.listen(process.env.PORT, (error) => {
