@@ -42,7 +42,7 @@ const updateStatus = async (status) => {
             const callback = async (tx) => {
                 await updateTxHash('0x' + tx);
                 data.txHash = "0x" + tx;
-                pubSub.emit("RELAYE_START", await queue.withdrawJob.getStatus(data.uuid));
+                pubSub.emit("RELAYE_START", data);
             };
             data.isZRC2 ? await proxy.WithdrawToken(params, callback) : await proxy.WithdrawZil(params, callback);
             await updateStatus(status.ACCEPTED);
