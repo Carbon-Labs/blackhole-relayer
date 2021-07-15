@@ -69,11 +69,10 @@ const io = new Server(httpServer, {
     app.use("/", router);
 
     io.on('connection', (socket) => {
-        socket.on('JOIN_RELAYER', async ({txId}) => {
-            socket.join(txId);
+        socket.on('JOIN_RELAYER', ({txId}) => {
             console.log("client join relayer: ", txId);
+            socket.join(txId);
         });
-        socket.on('disconnect', () => io.sockets.connected[socket.id].disconnect());
     });
 
     pubSub.on("RELAYE_START", ({txHash, uuid}) => {
