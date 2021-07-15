@@ -39,7 +39,12 @@ const updateStatus = async (status) => {
         try {
             await updateStatus(status.QUEUED);
             const params = data.token_address ? createWithdraw.zrc2Withdraw(data) : createWithdraw.zilWithdraw(data);
-            data.isZRC2 ? await proxy.WithdrawToken(params, async (tx) => await updateTxHash('0x' + tx)) : await proxy.WithdrawZil(params, async (tx) => await updateTxHash('0x' + tx));
+            const callback = async (tx) => {
+                await updateTxHash('0x' + tx);
+                data.txHash = "0x" + tx;
+                pubSub.emit("RELAYE_START", await queue.withdrawJob.getStatus(data.uuid));
+            };
+            data.isZRC2 ? await proxy.WithdrawToken(params, callback) : await proxy.WithdrawZil(params, callback);
             await updateStatus(status.ACCEPTED);
             pubSub.emit("RELAYE_COMPLETE", await queue.withdrawJob.getStatus(data.uuid));
         } catch (e) {
