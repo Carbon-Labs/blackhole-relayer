@@ -18,7 +18,7 @@ const createTreePath = async ({address, index}) => {
 module.exports = async ({proof, relayer}) => {
     let path = await createTreePath({address: proof.contract_amount, index: proof.treeIndex});
     if (path.root.toString() !== proof.publicSignals[0].toString()) {
-        path = await createTreePath({address: proof.contract_amount, index: BigInt(proof.index) + BigInt(1)});
+        path = await createTreePath({address: proof.contract_amount, index: BigInt(proof.treeIndex) + BigInt(1)});
     }
     const {root} = path;
     const proofData = {
