@@ -18,3 +18,8 @@ yarn-error.log*
 
 nginx
 redis
+
+withdraw.json
+withdraw_proving_key.bin
+withdraw_proving_key.json
+withdraw_verification_key.json
